@@ -87,10 +87,10 @@ const Login: React.FC<LoginProps> = () => {
                     fontWeight={700}
                     cursor="pointer"
                     onClick={() => setAuthModalState({ open: true, view: 'signup' })}
-                >Sign Up</Text>
+                >SIGN UP</Text>
             </Flex>
         </form>
-    )
+    );
 };
 
 export default Login;
