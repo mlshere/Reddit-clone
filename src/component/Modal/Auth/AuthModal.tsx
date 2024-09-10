@@ -1,13 +1,17 @@
-import { authModalState } from '../../../app/atoms/authModalAtom';
+import { authModalState, ModalView } from '../../../app/atoms/authModalAtom';
 import { Button, Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Text } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import AuthInputs from './AuthInputs';
 import OAuthButtons from './OAuthButtons';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '@/firebase/clientApp';
+import ResetPassword from '../ResetPassword';
 
 const AuthModal: React.FC = () => {
     const [modalState, setModalState] = useRecoilState(authModalState);
-
+    const [user, loading, error] = useAuthState(auth);
+    
     const handleClose = () => {
       setModalState((prev) => ({
         ...prev,
@@ -15,6 +19,19 @@ const AuthModal: React.FC = () => {
       }));
     }; 
 
+    const toggleView = (view: string) => {
+      setModalState({
+        ...modalState,
+        view: view as typeof modalState.view,
+      });
+    };
+
+    useEffect(() => {
+      if (user) {
+        handleClose();
+        console.log('user', user);
+      }
+    }, [user])
     return (
       <>
         <Modal isOpen={modalState.open} onClose={handleClose}>
@@ -40,10 +57,16 @@ const AuthModal: React.FC = () => {
                   width='70%' 
                   
                   >
+                    {modalState.view === 'login' || modalState.view === 'signup' ? (
+                    <>
+                    
                     <OAuthButtons />
                     <Text color="gray.500" fontWeight={700}>OR</Text>
                     <AuthInputs/> 
-                    {/* <ResetPassword /> */}
+                    </>
+                    ) : (
+                    <ResetPassword toggleView={toggleView} />
+                    )}
                 </Flex>
             </ModalBody>
           </ModalContent>
