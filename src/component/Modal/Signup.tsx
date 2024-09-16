@@ -43,13 +43,12 @@ const SignUp: React.FC = () => {
       collection(firestore, "users"),
       JSON.parse(JSON.stringify(user))
     );
-
-    useEffect(() => {
-      if (userCred) {
-        createUserDocument(userCred.user);
-      }
-    }, [userCred]);
   };
+  useEffect(() => {
+    if (userCred) {
+      createUserDocument(userCred.user);
+    }
+  }, [userCred]);
 
   return (
     <form onSubmit={onSubmit}>
