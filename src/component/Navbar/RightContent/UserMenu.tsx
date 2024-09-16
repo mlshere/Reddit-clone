@@ -1,3 +1,4 @@
+import { authModalState } from "@/app/atoms/authModalAtom";
 import { auth } from "@/firebase/clientApp";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
@@ -13,21 +14,23 @@ import {
 } from "@chakra-ui/react";
 import { signOut, User } from "firebase/auth";
 import React from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { CgProfile } from "react-icons/cg";
 import { FaRedditSquare } from "react-icons/fa";
 import { IoSparkles } from "react-icons/io5";
 import { MdOutlineLogin } from "react-icons/md";
 import { VscAccount } from "react-icons/vsc";
+import { useRecoilState } from "recoil";
 
 
 type UserMenuProps = {
-  user?: User | null | never;
+  user?: User | null;
 };
 
-const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
-  function setAuthModalState(arg0: { open: boolean; view: string }): void {
-    throw new Error("Function not implemented.");
-  }
+const UserMenu: React.FC<UserMenuProps> = (): React.ReactNode => {
+  const [authModal, setModalState] = useRecoilState(authModalState);
+  const [user] = useAuthState(auth);
+  
 
   return (
     <Menu>
@@ -47,10 +50,6 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                   color="gray.300"
                   as={FaRedditSquare}
                 />
-              </>
-            ) : (
-              <>
-                <Icon fontSize={24} color="gray.400" mr={1} as={VscAccount} />
                 <Flex
                   display={{ base: "none", lg: "flex" }}
                   flexDirection="column"
@@ -59,13 +58,18 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                   mr={8}
                 >
                   <Text fontWeight={700}>
-                    {user?.displayName || user?.email?.split("@")[0][0]}   
+                    {user?.displayName || user?.email?.split("@")[0]}   
                   </Text>
                   <Flex alignItems="center">
                     <Icon as={IoSparkles} color="brand.100" mr={1} />
                     <Text color="gray.400">1 karma</Text>
                   </Flex>
                 </Flex>
+              </>
+            ) : (
+              <>
+                <Icon fontSize={24} color="gray.400" mr={1} as={VscAccount} />
+                
               </>
             )}
           </Flex>
@@ -104,7 +108,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
               fontSize="10pt"
               fontWeight={700}
               _hover={{ bg: "blue.500", color: "white" }}
-              onClick={() => setAuthModalState({ open: true, view: "login" })}
+              onClick={() => setModalState({ open: true, view: "login" })}
             >
               <Flex align="center">
                 <Icon fontSize={20} mr={2} as={CgProfile} />
