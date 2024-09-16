@@ -56,7 +56,9 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
 
   //firebase logic to create a community
   const handleCreateCommunity = async () => {
+    if (user) setError("");
     // validate the community name
+
     const format = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
     if (format.test(communityName) || communityName.length < 3) {
       setError(
