@@ -18,6 +18,8 @@
     "@fontsource/raleway": "^5.0.19",
     "@next/bundle-analyzer": "^14.2.5",
     "firebase": "^10.12.4",
+    "firebase-admin": "^12.5.0",
+    "firebase-functions": "^6.0.0",
     "framer-motion": "^11.3.14",
     "next": "14.2.5",
     "react": "^18",
