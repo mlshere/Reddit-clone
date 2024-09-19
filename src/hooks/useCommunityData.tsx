@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   Community,
   CommunitySnippet,
@@ -14,11 +14,13 @@ import {
   doc,
   increment,
 } from "firebase/firestore";
+import { authModalState } from "@/app/atoms/authModalAtom";
 
 const useCommunityData = () => {
   const [user] = useAuthState(auth);
   const [communityStateValue, setCommunityStateValue] =
     useRecoilState(communityState);
+  const setAuthModalState = useSetRecoilState(authModalState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(" ");
 
@@ -28,6 +30,12 @@ const useCommunityData = () => {
   ) => {
     // check if user is joined
     // if not open auth modal
+    if (!user) {
+      //open auth modal
+      setAuthModalState({ open: true, view: "login" });
+    }
+
+    setLoading(true);
     if (isJoined) {
       leaveCommunity(communityData.id);
       return;
@@ -62,7 +70,7 @@ const useCommunityData = () => {
 
       const newSnippet: CommunitySnippet = {
         communityId: communityData.id,
-        imageUrl: communityData.imageURL || "",
+        imageUrl: communityData.imageURL || "",// add imageUrl fixed the error
         isModerator: false,
       };
       batch.set(
