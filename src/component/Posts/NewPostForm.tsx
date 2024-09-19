@@ -38,21 +38,22 @@ export type TabItem = {
 
 const NewPostForm = () => {
   const [selectedTab, setSelectedTab] = useState(formTabs[0].title);
-const [textInputs, setTextInputs] = useState({
+  const [textInputs, setTextInputs] = useState({
     title: "",
     body: "",
-});
-    const [selectedFile, setSelectedFile] = useState<string>();
-  const handleCreatePost = async () => {
-
-  };
+  });
+  const [selectedFile, setSelectedFile] = useState<string>();
+  const [loading, setLoading] = useState(false);
+  const handleCreatePost = async () => {};
 
   const onSelectImage = () => {};
 
   const onTextChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { target: { name, value } } = event;
+    const {
+      target: { name, value },
+    } = event;
     setTextInputs((prev) => ({
       ...prev,
       [name]: value,
@@ -71,7 +72,12 @@ const [textInputs, setTextInputs] = useState({
         ))}
       </Flex>
       <Flex p={4}>
-        <TextInputs textInputs={textInputs} handleCreatePost={handleCreatePost} onChange={onTextChange}  loading={false}/>
+        <TextInputs
+          textInputs={textInputs}
+          handleCreatePost={handleCreatePost}
+          onChange={onTextChange}
+          loading={loading}
+        />
       </Flex>
     </Flex>
   );
