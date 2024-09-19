@@ -10,7 +10,10 @@ const OAuthButtons: React.FC = () => {
     useSignInWithGoogle(auth);
 
   const createUserDocument = async (user: User) => {
-    const userDocRef = doc(firestore, "user, user.uid");
+    if (!user.uid) {
+      throw new Error("The user is not defined");
+  }
+    const userDocRef = doc(firestore, "user", user.uid);
     await setDoc(userDocRef, JSON.parse(JSON.stringify(user)));
   };
 
@@ -19,6 +22,7 @@ const OAuthButtons: React.FC = () => {
       createUserDocument(userCred.user);
     }
   }, [userCred]);
+   
   return (
     <Flex direction="column" width="100%" mb={4}>
       <Button
