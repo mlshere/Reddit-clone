@@ -9,6 +9,7 @@ import NotFound from "@/component/Community/NotFound";
 import { error } from "console";
 import Header from "@/component/Community/Header";
 import PageContent from "@/component/Layout/PageContent";
+import CreatePostLink from "../../../component/Community/CreatePostLink";
 
 type CommunityPageProps = {
   communityData: Community;
@@ -24,8 +25,8 @@ const CommunityPage: React.FC<CommunityPageProps> = ({ communityData }) => {
       <Header communityData={communityData} />
       <PageContent>
         <>
-          <div> LHS</div>
-        </>
+        <CreatePostLink />
+       </>
         <>
           <div> RHS</div>
         </>
