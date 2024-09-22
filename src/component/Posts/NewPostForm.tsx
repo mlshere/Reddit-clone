@@ -7,6 +7,7 @@ import { IoDocument, IoDocumentText, IoImageOutline } from "react-icons/io5";
 import { AiFillCloseCircle } from "react-icons/ai";
 import TabItemComponent from "./TabItem";
 import TextInputs from "../Posts/PostForm/TextInputs";
+import ImageUpload from "./PostForm/ImageUpload";
 
 const formTabs: TabItem[] = [
   {
@@ -44,9 +45,32 @@ const NewPostForm = () => {
   });
   const [selectedFile, setSelectedFile] = useState<string>();
   const [loading, setLoading] = useState(false);
-  const handleCreatePost = async () => {};
 
-  const onSelectImage = () => {};
+  const handleCreatePost = async () => {
+    // create new post => type post
+    const newPost: Post = {}
+    // store post in db
+
+    // check if image is selected (selectedFile truthy)
+      // storage image in firebase storage => geDownloadURL (return imgurl)
+      // update post with imgurl
+
+    // redirect to commuity page
+
+  };
+
+  const onSelectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const reader = new FileReader();
+
+    if (event.target.files?.[0]) {
+      reader.readAsDataURL(event.target.files[0]);
+    }
+
+    reader.onload = (readerEvent) => {
+      if (readerEvent.target?.result)
+        setSelectedFile(readerEvent.target?.result as string);
+    };
+  };
 
   const onTextChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -65,6 +89,7 @@ const NewPostForm = () => {
       <Flex width="100%">
         {formTabs.map((item) => (
           <TabItemComponent
+            key={item.title}
             item={item}
             selected={item.title === selectedTab}
             setSelectedTab={setSelectedTab}
@@ -72,12 +97,22 @@ const NewPostForm = () => {
         ))}
       </Flex>
       <Flex p={4}>
-        <TextInputs
-          textInputs={textInputs}
-          handleCreatePost={handleCreatePost}
-          onChange={onTextChange}
-          loading={loading}
-        />
+        {selectedTab === "Post" && (
+          <TextInputs
+            textInputs={textInputs}
+            handleCreatePost={handleCreatePost}
+            onChange={onTextChange}
+            loading={loading}
+          />
+        )}
+        {selectedTab === "Image & Video" && (
+          <ImageUpload
+            selectedFile={selectedFile}
+            onSelectImage={onSelectImage}
+            setSelectedFile={setSelectedFile}
+            setSelectedTab={setSelectedTab}
+          />
+        )}
       </Flex>
     </Flex>
   );
