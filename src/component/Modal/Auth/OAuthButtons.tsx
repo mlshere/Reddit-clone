@@ -13,7 +13,7 @@ const OAuthButtons: React.FC = () => {
     if (!user.uid) {
       throw new Error("The user is not defined");
   }
-    const userDocRef = doc(firestore, "user", user.uid);
+    const userDocRef = doc(firestore, "users", user.uid);
     await setDoc(userDocRef, JSON.parse(JSON.stringify(user)));
   };
 
@@ -31,7 +31,7 @@ const OAuthButtons: React.FC = () => {
         isLoading={loading}
         onClick={() => signInWithGoogle()}
       >
-        <Image src="/images/googlelogo.png" height="20px" mr={4} />
+        <Image src="/images/googlelogo.png" height="20px" mr={4} alt=""/>
         Continue with Google
       </Button>
       <Button variant="oauth">Some Other Provider</Button>
