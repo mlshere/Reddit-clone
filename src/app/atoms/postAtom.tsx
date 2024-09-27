@@ -3,8 +3,8 @@ import { atom } from 'recoil';
 
 export type Post = {
     id: string;
-    communityIDe: string;
-    creatorID: string;
+    communityId: string;
+    creatorId: string;
     creatorDisplayName: string;
     title: string;
     body: string;
@@ -16,18 +16,18 @@ export type Post = {
 }
 
 interface PostState {
+    [x: string]: any;
     selectedPost: Post | null;
-    post: Post[];
+    posts: Post[]; 
     //postVotes
 }
 
 const defaultPostState: PostState = {
     selectedPost: null,
-    post: [],
-    //postVotes
+    posts: [],
 }
 
 export const postState = atom<PostState>({
-    key: 'postState',
+    key: 'postStateAtom',
     default: defaultPostState
 });
