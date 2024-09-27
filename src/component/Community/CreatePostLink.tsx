@@ -4,7 +4,6 @@ import React, { use } from "react";
 import { BsLink45Deg } from "react-icons/bs";
 import { FaReddit } from "react-icons/fa";
 import { IoImageOutline } from "react-icons/io5";
-import  useDirectory  from "../../hooks/useDirectory";
 import { authModalState } from "../../app/atoms/authModalAtom";
 import { auth } from "../../firebase/clientApp";
 import { useSetRecoilState } from "recoil";
@@ -16,16 +15,22 @@ const CreatePostLink = () => {
     // const { toggleMenuOpen } = useDirectory();
     const setAuthModalState = useSetRecoilState(authModalState);    
     const onClick = () => {
-      if(!user) {
+      if (!user) {
         setAuthModalState({ open: true, view: "login" });
         return;
       }
+      
       const { communityId } = router.query;
-        router.push(`/r/${communityId}/submit`);
+      if (!communityId) {
+        console.error("Community ID is undefined. Please ensure it's passed in the URL.");
+        return;
+      }
+    
+      router.push(`/r/${communityId}/submit`);
     };
     return (
       <Flex
-        justify="space-evenly"
+        justify="space-evenly" 
         align="center"
         bg="white"
         height="56px"
