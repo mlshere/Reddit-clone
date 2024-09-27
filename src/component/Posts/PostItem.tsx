@@ -1,6 +1,6 @@
 import { Post } from "@/app/atoms/postAtom";
-import { Flex, Icon, Stack, Text, Image } from "@chakra-ui/react";
-import React from "react";
+import { Flex, Icon, Stack, Text, Image, Skeleton } from "@chakra-ui/react";
+import React, { useState } from "react";
 import { AiOutlineAccountBook, AiOutlineDelete } from "react-icons/ai";
 import { BsChat, BsDot } from "react-icons/bs";
 import { FaReddit } from "react-icons/fa";
@@ -19,7 +19,7 @@ type PostItemProps = {
   userIsCreator: boolean;
   userVoteValue: number;
   onVote: () => {};
-  onDeletePost: () => void;
+  onDeletePost: (post: Post) => Promise<boolean>;
   onSelectPost: () => void;
 };
 
@@ -31,6 +31,27 @@ const PostItem: React.FC<PostItemProps> = ({
   onDeletePost,
   onSelectPost,
 }) => {
+  const [loadingImage, setLoadingImage] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
+  const [error, setError] = useState(false);
+
+  const handleDelete = async () => {
+    setLoadingDelete(true);
+    try {
+      // delete post
+      const success = await onDeletePost(post);
+      
+      if(!success) {
+        throw new Error("Failed to delete post");
+      }    
+       console.log("Post was successfully deleted");
+    } catch (error: any) {
+      console.log("Delete post error", error.message);
+      setError(error.message)
+    }
+    setLoadingDelete(false);
+  };
+
   return (
     <Flex
       border="1px solid"
@@ -86,7 +107,16 @@ const PostItem: React.FC<PostItemProps> = ({
           <Text fontSize="10pt">{post.body}</Text>
           {post.imageURL && (
             <Flex justify="center" align="center" p={2}>
-              <Image src={post.imageURL} maxHeight="460px" alt="Post Image" />
+              {loadingImage && (
+                <Skeleton height="200px" width="100%" borderRadius={4} />
+              )}
+              <Image
+                src={post.imageURL}
+                maxHeight="460px"
+                alt="Post Image"
+                display={loadingImage ? "none" : "block"}
+                onLoad={() => setLoadingImage(false)}
+              />
             </Flex>
           )}
         </Stack>
@@ -98,7 +128,7 @@ const PostItem: React.FC<PostItemProps> = ({
             _hover={{ bg: "gray.200" }}
             cursor="pointer"
           >
-            <Icon as={BsChat} />
+            <Icon as={BsChat} mr={2} />
             <Text fontSize="9pt">{post.numberOfComments}</Text>
           </Flex>
           <Flex
@@ -108,7 +138,7 @@ const PostItem: React.FC<PostItemProps> = ({
             _hover={{ bg: "gray.200" }}
             cursor="pointer"
           >
-            <Icon as={IoArrowRedoOutline} />
+            <Icon as={IoArrowRedoOutline} mr={2} />
             <Text fontSize="9pt">Share</Text>
           </Flex>
           <Flex
@@ -117,22 +147,22 @@ const PostItem: React.FC<PostItemProps> = ({
             borderRadius={4}
             _hover={{ bg: "gray.200" }}
             cursor="pointer"
-          >  
-            <Icon as={IoBookmarkOutline} />
+          >
+            <Icon as={IoBookmarkOutline} mr={2} />
             <Text fontSize="9pt">Save</Text>
           </Flex>
           {userIsCreator && (
             <Flex
-            align="center"
-            p="8px 10px "
-            borderRadius={4}
-            _hover={{ bg: "gray.200" }}
-            cursor="pointer"
-            onClick={onDeletePost}
-          >  
-            <Icon as={AiOutlineDelete} />
-            <Text fontSize="9pt">Delete</Text>
-          </Flex>
+              align="center"
+              p="8px 10px "
+              borderRadius={4}
+              _hover={{ bg: "gray.200" }}
+              cursor="pointer"
+              onClick={handleDelete}
+            >
+              <Icon as={AiOutlineDelete} mr={2} />
+              <Text fontSize="9pt">Delete</Text>
+            </Flex>
           )}
         </Flex>
       </Flex>
