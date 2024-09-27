@@ -28,6 +28,6 @@ const defaultPostState: PostState = {
 }
 
 export const postState = atom<PostState>({
-    key: 'postStateAtom',
+    key: 'postState',
     default: defaultPostState
 });
