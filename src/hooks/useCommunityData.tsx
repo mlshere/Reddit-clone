@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   Community,
@@ -24,45 +24,52 @@ const useCommunityData = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(" ");
 
-  const onJoinOrLeaveCommunity = (
-    communityData: Community,
-    isJoined: boolean
-  ) => {
-    // check if user is joined
-    // if not open auth modal
-    if (!user) {
-      //open auth modal
-      setAuthModalState({ open: true, view: "login" });
-    }
-
-    setLoading(true);
-    if (isJoined) {
-      leaveCommunity(communityData.id);
-      return;
-    }
-    joinCommunity(communityData);
-  };
-  const getMySnippets = async () => {
+  const onJoinOrLeaveCommunity = useCallback(
+    (
+      communityData: Community,
+      isJoined: boolean
+    ) => {
+      // check if user is joined
+      // if not open auth modal
+      if (!user) {
+        //open auth modal
+        setAuthModalState({ open: true, view: "login" });
+        return;
+      }
+  
+      setLoading(true);
+      if (isJoined) {
+        leaveCommunity(communityData.id);
+        return;
+      }
+      joinCommunity(communityData);
+    },
+    [user, setAuthModalState]
+  );
+  const getMySnippets = useCallback(async () => {
     if (!user?.uid) return;
     setLoading(true);
+
     try {
-      // get user snippets
       const snippetDocs = await getDocs(
         collection(firestore, `users/${user?.uid}/communitySnippets`)
       );
       const snippets = snippetDocs.docs.map((doc) => ({ ...doc.data() }));
+      console.log("here are snippets", snippets);
       setCommunityStateValue((prev) => ({
         ...prev,
         mySnippets: snippets as CommunitySnippet[],
       }));
-    } catch (error) {
-      console.log("getMySnippets error: ", error);
-      setError("error.message");
+    } catch (error: any) {
+      console.error("getMySnippets error: ", error.message);
+      setError(error.message || "Failed to get community snippets.");
     }
-    setLoading(false);
-  };
 
-  const joinCommunity = async (communityData: Community) => {
+    setLoading(false);
+  }, [user, setCommunityStateValue]);
+
+  const joinCommunity =  useCallback(
+  async (communityData: Community) => {
     //batch write
     // add community to user snippets
     try {
@@ -101,9 +108,10 @@ const useCommunityData = () => {
       setError("error.message");
     }
     setLoading(false);
-  };
+  },  [user, setCommunityStateValue])
 
-  const leaveCommunity = async (communityId: string) => {
+  const leaveCommunity = useCallback(
+  async (communityId: string) => {
     //batch write
     // remove community from user snippets
 
@@ -133,24 +141,24 @@ const useCommunityData = () => {
       setError("error.message");
     }
     setLoading(false);
-  };
+  },     [user, setCommunityStateValue]
+)
 
   useEffect(() => {
     console.log("User state:", user); // log user state
     if (!user) return;
     getMySnippets();
-  }, [user]);
+  }, [user, getMySnippets]);
 
   return {
     //data and functions
     communityStateValue,
     onJoinOrLeaveCommunity,
     loading,
+    error,
   };
 };
 
 export default useCommunityData;
 
-function leaveCommunity(id: string) {
-  throw new Error("Function not implemented.");
-}
+
