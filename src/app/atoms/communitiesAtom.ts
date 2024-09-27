@@ -1,35 +1,52 @@
-import { Timestamp } from 'firebase-admin/firestore';
-import { atom } from 'recoil';
+import { Timestamp } from "firebase-admin/firestore";
+import { atom } from "recoil";
 
 export interface Community {
-    imageURL: any;
-    id: string;
-    cratorId: string;
-    numberOfMembers: number;
-    privacyType: "public" | "restricted" | "private";  
-    // optional + ?
-    createdAt?: Timestamp
-    imageURI?: string;
+  id: string;
+  creatorId: string;
+  numberOfMembers: number;
+  privacyType: "public" | "restricted" | "private";
+  // optional + ?
+  createdAt?: Timestamp;
+  imageURL?: string;
 }
 
+
 export interface CommunitySnippet {
-    communityId: string;
-    isModerator: boolean;
-    imageUrl?: string;
+  communityId: string;
+  isModerator?: boolean;
+  imageUrl?: string;
 }
 
 interface CommunityState {
-    currentCommunity: any;
-    mySnippets: CommunitySnippet[];
-    //visitedCommunities:
+  [key: string]:
+    | CommunitySnippet[]
+    | { [key: string]: Community }
+    | Community
+    | boolean
+    | undefined;
+  mySnippets: CommunitySnippet[];
+  initSnippetsFetched: boolean;
+  visitedCommunities: {
+    [key: string]: Community;
+  };
+  currentCommunity: Community;
 }
+export const defaultCommunity: Community = {
+  id: "",
+  creatorId: "",
+  numberOfMembers: 0,
+  privacyType: "public",
+};
 
 const defaultCommunityState: CommunityState = {
-    mySnippets: [],
-    currentCommunity: undefined
-}
+  mySnippets: [],
+  initSnippetsFetched: false,
+  visitedCommunities: {},
+  currentCommunity: defaultCommunity,
+};
 
 export const communityState = atom<CommunityState>({
-    key: 'communityState',
-    default: defaultCommunityState,
-})
+  key: "communityStateAtom",
+  default: defaultCommunityState,
+});
