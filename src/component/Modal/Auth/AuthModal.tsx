@@ -1,6 +1,6 @@
 import { authModalState, ModalView } from '../../../app/atoms/authModalAtom';
 import { Button, Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Text } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import AuthInputs from './AuthInputs';
 import OAuthButtons from './OAuthButtons';
@@ -12,13 +12,13 @@ const AuthModal: React.FC = () => {
     const [modalState, setModalState] = useRecoilState(authModalState);
     const [user, loading, error] = useAuthState(auth);
     
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
       setModalState((prev) => ({
         ...prev,
         open: false,
       }));
-    }; 
-
+    }, [setModalState]);
+    
     const toggleView = (view: string) => {
       setModalState({
         ...modalState,
@@ -31,7 +31,7 @@ const AuthModal: React.FC = () => {
         handleClose();
         console.log('user', user);
       }
-    }, [user])
+    }, [user, handleClose]);
     return (
       <>
         <Modal isOpen={modalState.open} onClose={handleClose}>
