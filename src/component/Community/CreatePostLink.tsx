@@ -1,6 +1,6 @@
 import { Flex, Icon, Input } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, { use } from "react";
+import React  from "react";
 import { BsLink45Deg } from "react-icons/bs";
 import { FaReddit } from "react-icons/fa";
 import { IoImageOutline } from "react-icons/io5";
