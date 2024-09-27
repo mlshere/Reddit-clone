@@ -1,13 +1,29 @@
-import { Flex, Icon } from "@chakra-ui/react";
-import { title } from "process";
-import React, { useState } from "react";
+import { Alert,  AlertIcon, Text, Flex, Icon } from "@chakra-ui/react";
+import React, { useState, useRef, useEffect } from "react";
 import { BiPoll } from "react-icons/bi";
 import { BsLink45Deg, BsMic } from "react-icons/bs";
-import { IoDocument, IoDocumentText, IoImageOutline } from "react-icons/io5";
-import { AiFillCloseCircle } from "react-icons/ai";
+import { IoDocumentText, IoImageOutline } from "react-icons/io5";
 import TabItemComponent from "./TabItem";
 import TextInputs from "../Posts/PostForm/TextInputs";
 import ImageUpload from "./PostForm/ImageUpload";
+import { Post } from "../../app/atoms/postAtom";
+import { User } from 'firebase/auth';
+import { useRouter } from "next/router";
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+  updateDoc,
+  Timestamp,
+} from "firebase/firestore";
+import { firestore, storage } from "../../firebase/clientApp";
+import { ref, uploadString, getDownloadURL } from "firebase/storage";
+
+type NewPostFormProps = {
+  user: User;
+  // communityId: string;
+  // communityImageURL: string;
+};
 
 const formTabs: TabItem[] = [
   {
@@ -35,9 +51,14 @@ const formTabs: TabItem[] = [
 export type TabItem = {
   title: string;
   icon: typeof Icon.arguments;
-};
+}; 
 
-const NewPostForm = () => {
+const NewPostForm: React.FC<NewPostFormProps> = ({
+  user,
+  // communityId,
+  // communityImageURL,
+}) => {
+  const router = useRouter();
   const [selectedTab, setSelectedTab] = useState(formTabs[0].title);
   const [textInputs, setTextInputs] = useState({
     title: "",
@@ -45,18 +66,74 @@ const NewPostForm = () => {
   });
   const [selectedFile, setSelectedFile] = useState<string>();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const [communityId, setCommunityId] = useState<string | null>(null);
+
+  // retrieve communityId from router
+  useEffect(() => {
+    if (router.isReady) {
+      console.log("Router query:", router.query);
+      const { communityId } = router.query;
+      if (communityId) {
+        setCommunityId(communityId as string);
+      } else {
+        console.error("Community ID is undefined or missing");
+      }
+    }
+  }, [router.isReady, router.query]);
 
   const handleCreatePost = async () => {
-    // create new post => type post
-    const newPost: Post = {}
-    // store post in db
+    
+    const { communityId } = router.query;
+    console.log(router.query);
+    if (!communityId) {
+      console.log("Community ID is undefined");
+      return;
+    }
+    const newPost: Post = {
+      id: "",
+      communityId: communityId as string,
+      creatorId: user.uid,
+      creatorDisplayName: user.email!.split("@")[0],
+      title: textInputs.title,
+      body: textInputs.body,
+      numberOfComments: 0,
+      voteStatus: 0,
+      createdAt: serverTimestamp() as Timestamp,
+    }
 
-    // check if image is selected (selectedFile truthy)
-      // storage image in firebase storage => geDownloadURL (return imgurl)
-      // update post with imgurl
+    setLoading(true);
+   
+    try {
+      const postDocRef = await addDoc(collection(firestore, "posts"), newPost);
+
+      console.log("HERE IS NEW POST ID", postDocRef.id);
+      // check if image is selected (selectedFile truthy)
+      if (selectedFile) {
+        // storage image in firebase storage => geDownloadURL (return imgurl)
+
+        const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
+        await uploadString(imageRef, selectedFile, "data_url");
+        const downloadURL = await getDownloadURL(imageRef);
+
+        // update post with imgurl
+        await updateDoc(postDocRef, {
+          imageURL: downloadURL,
+        });
+      }
+
+    
+    } catch (error: any) {
+      console.log("handleCreatePost error", error.message);
+      setError(true);
+    }
+
+    
+    setLoading(false);
 
     // redirect to commuity page
-
+    router.back();
   };
 
   const onSelectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,8 +144,9 @@ const NewPostForm = () => {
     }
 
     reader.onload = (readerEvent) => {
-      if (readerEvent.target?.result)
+      if (readerEvent.target?.result) {
         setSelectedFile(readerEvent.target?.result as string);
+      }
     };
   };
 
@@ -114,6 +192,12 @@ const NewPostForm = () => {
           />
         )}
       </Flex>
+      {error && (
+        <Alert status='error'>
+        <AlertIcon />
+       <Text mr={2}>Error creating </Text>
+      </Alert>
+      )}
     </Flex>
   );
 };
