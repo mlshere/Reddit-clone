@@ -1,5 +1,15 @@
 import { Post } from "@/app/atoms/postAtom";
-import { Flex, Icon, Stack, Text, Image, Skeleton } from "@chakra-ui/react";
+import {
+  Flex,
+  Icon,
+  Stack,
+  Text,
+  Image,
+  Skeleton,
+  Spinner,
+  AlertIcon,
+  Alert,
+} from "@chakra-ui/react";
 import React, { useState } from "react";
 import { AiOutlineAccountBook, AiOutlineDelete } from "react-icons/ai";
 import { BsChat, BsDot } from "react-icons/bs";
@@ -40,14 +50,14 @@ const PostItem: React.FC<PostItemProps> = ({
     try {
       // delete post
       const success = await onDeletePost(post);
-      
-      if(!success) {
+
+      if (!success) {
         throw new Error("Failed to delete post");
-      }    
-       console.log("Post was successfully deleted");
+      }
+      console.log("Post was successfully deleted");
     } catch (error: any) {
       console.log("Delete post error", error.message);
-      setError(error.message)
+      setError(error.message);
     }
     setLoadingDelete(false);
   };
@@ -93,6 +103,12 @@ const PostItem: React.FC<PostItemProps> = ({
         />
       </Flex>
       <Flex direction="column" width="100%">
+        {error && (
+          <Alert status="error">
+            <AlertIcon />
+            <Text mr={2}>{error} </Text>
+          </Alert>
+        )}
         <Stack spacing={1} p="10px">
           <Stack direction="row" spacing={0.6} align="center" fontSize="9pt">
             {/* Home Page Check */}
@@ -160,8 +176,14 @@ const PostItem: React.FC<PostItemProps> = ({
               cursor="pointer"
               onClick={handleDelete}
             >
-              <Icon as={AiOutlineDelete} mr={2} />
-              <Text fontSize="9pt">Delete</Text>
+              {loadingDelete ? (
+                <Spinner size="sm" />
+              ) : (
+                <>
+                  <Icon as={AiOutlineDelete} mr={2} />
+                  <Text fontSize="9pt">Delete</Text>
+                </>
+              )}
             </Flex>
           )}
         </Flex>
