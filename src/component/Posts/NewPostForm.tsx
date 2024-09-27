@@ -107,6 +107,11 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
    
     try {
       const postDocRef = await addDoc(collection(firestore, "posts"), newPost);
+        // Get the generated ID from the document reference
+        const postId = postDocRef.id;
+
+        // Update the post with the generated ID
+        await updateDoc(postDocRef, { id: postId });
 
       console.log("HERE IS NEW POST ID", postDocRef.id);
       // check if image is selected (selectedFile truthy)
@@ -195,7 +200,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       {error && (
         <Alert status='error'>
         <AlertIcon />
-       <Text mr={2}>Error creating </Text>
+       <Text mr={2}>Error creating post</Text>
       </Alert>
       )}
     </Flex>
