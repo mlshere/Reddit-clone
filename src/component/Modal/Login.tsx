@@ -16,17 +16,26 @@ const Login: React.FC<LoginProps> = ({ toggleView }) => {
         email: '',
         password: ''
     });
+    const [formError, setFormError] = useState("");
     const [
         signInWithEmailAndPassword,
-        user,
+        _,
         loading,
         error,
       ] = useSignInWithEmailAndPassword(auth)
 
+    
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        signInWithEmailAndPassword(loginForm.email, loginForm.password);
+        event.preventDefault(); 
+        if (formError) setFormError("");
+        if (!loginForm.email.includes("@")) {
+          return setFormError("Please enter a valid email");
+        }
+        try {
+            signInWithEmailAndPassword(loginForm.email, loginForm.password);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
