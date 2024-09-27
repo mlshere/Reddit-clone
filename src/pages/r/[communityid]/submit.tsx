@@ -15,6 +15,7 @@ const SubmitPostPage: React.FC = () => {
   const { community } = router.query;
   // const visitedCommunities = useRecoilValue(communityState).visitedCommunities;
   const communityStateValue = useRecoilValue(communityState);
+  console.log('COMMUNITY', communityStateValue)
   const { loading } = useCommunityData();
   
   return (
