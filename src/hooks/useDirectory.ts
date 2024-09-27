@@ -60,7 +60,7 @@ const useDirectory = () => {
       ...prev,
       selectedMenuItem: defaultMenuItem,
     }));
-  }, [communityStateValue.currentCommunity]);
+  }, [router.query, communityStateValue.currentCommunity, setDirectoryState]);
   //                              ^ used to be communityStateValue.vistedCommunities
 
   return { directoryState, onSelectMenuItem, toggleMenuOpen };
