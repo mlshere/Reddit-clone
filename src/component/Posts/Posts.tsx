@@ -39,6 +39,7 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
     
     try {
       setLoading(true);
+
       // get posts for this community
       const postsQuery = query(
         collection(firestore, "posts"),
@@ -46,6 +47,7 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
         orderBy("createdAt", "desc")
       );
       const postDocs = await getDocs(postsQuery);
+      console.log("Fetched post documents:", postDocs.docs);
 
       //Store in post state
       const posts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -71,17 +73,17 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
         <PostLoader />
       ) : (
         <Stack>
-          {postStateValue.posts.map((item) => (
+          {postStateValue.posts.map((post) => (
             <PostItem
-              key={item.id}
-              post={item}
-              userIsCreator={user?.uid === item.creatorId}
-              userVoteValue={0}
+              key={post.id}
+              post={post}
+              userIsCreator={user?.uid === post.creatorId}
+              userVoteValue={postStateValue.postVotes.find((vote) => vote.postId === post.id)?.voteValue ?? 0}
               onVote={onVote}
               onSelectPost={onSelectPost}
               onDeletePost={onDeletePost}
             />
-          ))}
+          ))} 
         </Stack>
       )}
     </>
