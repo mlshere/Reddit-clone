@@ -28,8 +28,8 @@ type PostItemProps = {
   post: Post;
   userIsCreator: boolean;
   userVoteValue: number;
-  onVote: () => {};
-  onDeletePost: (post: Post) => Promise<boolean>;
+  onVote: (post: Post, vote: number, communityId: string) => void;
+  onDeletePost: (post: Post) => Promise<boolean> ;
   onSelectPost: () => void;
 };
 
@@ -62,6 +62,11 @@ const PostItem: React.FC<PostItemProps> = ({
     setLoadingDelete(false);
   };
 
+
+  const handleVote = (vote: number) => {
+    onVote(post, vote, post.communityId);
+  };
+
   return (
     <Flex
       border="1px solid"
@@ -86,7 +91,7 @@ const PostItem: React.FC<PostItemProps> = ({
           }
           color={userVoteValue === 1 ? "brand.100" : "gray.400"}
           fontSize={22}
-          onClick={onVote}
+          onClick={() => handleVote(1)}
           cursor="pointer"
         />
         <Text fontSize="9pt">{post.voteStatus}</Text>
@@ -98,7 +103,7 @@ const PostItem: React.FC<PostItemProps> = ({
           }
           color={userVoteValue === -1 ? "#4379ff" : "gray.400"}
           fontSize={22}
-          onClick={onVote}
+          onClick={( ) => handleVote(-1)}
           cursor="pointer"
         />
       </Flex>
