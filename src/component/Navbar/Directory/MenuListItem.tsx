@@ -19,15 +19,13 @@ const MenuListItem: React.FC<MenuListItemProps> = ({
   imageURL,
 }) => {
     const { onSelectMenuItem } = useDirectory();
-    const handleItemClick = () => {
-      onSelectMenuItem({ displayText, link, icon, iconColor, imageURL });
-    };
+    
   return (
     <MenuItem
       width="100%"
       fontSize="10pt"
       _hover={{ bg: "gray.100" }}
-      onClick={handleItemClick}
+      onClick={() => onSelectMenuItem({ displayText, link, icon, iconColor, imageURL })}
     >
       <Flex align="center">
         {imageURL ? (
