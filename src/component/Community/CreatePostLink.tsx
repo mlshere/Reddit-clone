@@ -8,11 +8,12 @@ import { authModalState } from "../../app/atoms/authModalAtom";
 import { auth } from "../../firebase/clientApp";
 import { useSetRecoilState } from "recoil";
 import { useAuthState } from "react-firebase-hooks/auth";
+import useDirectory from "@/hooks/useDirectory";
 
 const CreatePostLink = () => {
     const router = useRouter();
     const [user] = useAuthState(auth);
-    // const { toggleMenuOpen } = useDirectory();
+    const { toggleMenuOpen } = useDirectory();
     const setAuthModalState = useSetRecoilState(authModalState);    
     const onClick = () => {
       if (!user) {
@@ -25,8 +26,13 @@ const CreatePostLink = () => {
         console.error("Community ID is undefined. Please ensure it's passed in the URL.");
         return;
       }
+
+      if(communityId) {
+        router.push(`/r/${communityId}/submit`);
+        return;
+      } 
     
-      router.push(`/r/${communityId}/submit`);
+      toggleMenuOpen();
     };
     return (
       <Flex
