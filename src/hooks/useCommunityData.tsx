@@ -13,8 +13,10 @@ import {
   writeBatch,
   doc,
   increment,
+  getDoc,
 } from "firebase/firestore";
 import { authModalState } from "@/app/atoms/authModalAtom";
+import { useRouter } from "next/router";
 
 const useCommunityData = () => {
   const [user] = useAuthState(auth);
@@ -23,6 +25,7 @@ const useCommunityData = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(" ");
+  const router = useRouter();
 
   const onJoinOrLeaveCommunity = useCallback(
     (
@@ -78,7 +81,7 @@ const useCommunityData = () => {
       const newSnippet: CommunitySnippet = {
         communityId: communityData.id,
         imageUrl: communityData.imageURL || "",// add imageUrl fixed the error
-        isModerator: false,
+        isModerator: user?.uid === communityData.creatorId,
       };
       batch.set(
         doc(
@@ -144,6 +147,22 @@ const useCommunityData = () => {
   },     [user, setCommunityStateValue]
 )
 
+  const getCommunityData = useCallback(
+    async (communityId: string) => {
+      try {
+        const communityDocRef = doc(firestore, "communities", communityId);
+        const communityDoc = await getDoc(communityDocRef);
+
+        setCommunityStateValue((prev) => ({
+          ...prev,
+          currentCommunity: { id: communityDoc.id, ...communityDoc.data() } as Community,
+        }));
+      } catch (error) {
+        console.log("getCommunityData error", error);
+      }
+    }, [setCommunityStateValue]
+  )
+
   useEffect(() => {
     console.log("User state:", user); // log user state
     if (!user) {
@@ -155,6 +174,15 @@ const useCommunityData = () => {
     }
     getMySnippets();
   }, [user, getMySnippets]);
+
+useEffect(() => {
+  const { communityId } = router.query;
+
+  if (communityId && !communityStateValue.currentCommunity) {
+    getCommunityData(communityId as string);
+  }
+}, [router.query, communityStateValue.currentCommunity]);
+
 
   return {
     //data and functions
