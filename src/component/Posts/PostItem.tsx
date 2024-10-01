@@ -23,6 +23,7 @@ import {
   IoBookmarkOutline,
 } from "react-icons/io5";
 import moment from "moment";
+import { useRouter } from "next/router";
 
 type PostItemProps = {
   post: Post;
@@ -46,12 +47,16 @@ const PostItem: React.FC<PostItemProps> = ({
   onDeletePost,
   onSelectPost,
 }) => {
-  const [loadingImage, setLoadingImage] = useState(false);
+  const [loadingImage, setLoadingImage] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [error, setError] = useState(false);
+  const router = useRouter();
   const singlePostPage = !onSelectPost;
 
-  const handleDelete = async () => {
+  const handleDelete = async (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    event.stopPropagation();
     setLoadingDelete(true);
     try {
       // delete post
@@ -61,6 +66,10 @@ const PostItem: React.FC<PostItemProps> = ({
         throw new Error("Failed to delete post");
       }
       console.log("Post was successfully deleted");
+      if (singlePostPage) {
+        router.push(`/r/${post.communityId}`);
+      }
+
     } catch (error: any) {
       console.log("Delete post error", error.message);
       setError(error.message);
@@ -74,7 +83,7 @@ const PostItem: React.FC<PostItemProps> = ({
       bg="white"
       borderColor={singlePostPage ? "white" : "gray.300"}
       borderRadius={singlePostPage ? "4px 4px 0px 0px" : 4}
-      _hover={{ bordeColor: singlePostPage ? "none" : "gray.400" }}
+      _hover={{ borderColor: singlePostPage ? "none" : "gray.400" }}
       cursor={singlePostPage ? "unset" : "pointer"}
       onClick={() => onSelectPost && onSelectPost(post)}
     >
