@@ -142,6 +142,10 @@ const usePosts = () => {
   };
 
   const onSelectPost = (post: Post) => {
+    if (!post.communityId) {
+      console.error("Community ID is missing");
+      return;
+    }
     setPostStateValue((prev) => ({
       ...prev,
       selectedPost: post,
