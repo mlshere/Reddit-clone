@@ -64,27 +64,7 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
 
   useEffect(() => {
     getPosts();
-  }, []);
-
-  const getCommunityPostVotes = async (communityId: string) => {
-    const postVotesQuery = query(
-      collection(firestore, "users", `${user?.uid}/postVotes`),
-      where("communityId", "==", communityId)
-    );
-
-    const postVotesDocs = await getDocs(postVotesQuery);
-    const postVotes = postVotesDocs.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-
-    setPostStateValue((prev) => ({
-      ...prev,
-      postVotes: postVotes as PostVote[],
-    }));
-  };
-
-
+  }, [communityData]);
 
   return (
     <>
