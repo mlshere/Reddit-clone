@@ -13,7 +13,7 @@ const useDirectory = () => {
   const [directoryState, setDirectoryState] =
     useRecoilState(directoryMenuState);
   const router = useRouter();
-
+  const [menuState, setMenuState] = useRecoilState(directoryMenuState);
   const communityStateValue = useRecoilValue(communityState);
 
   const onSelectMenuItem = (menuItem: DirectoryMenuItem) => {
@@ -36,34 +36,27 @@ const useDirectory = () => {
   };
 
   useEffect(() => {
-    const { community } = router.query;
+    const { currentCommunity } = communityStateValue;
 
-    // const existingCommunity =
-    //   communityStateValue.visitedCommunities[community as string];
-
-    const existingCommunity = communityStateValue.currentCommunity;
-
-    if (existingCommunity.id) {
+    if (currentCommunity) {
       setDirectoryState((prev) => ({
         ...prev,
         selectedMenuItem: {
-          displayText: `r/${existingCommunity.id}`,
-          link: `r/${existingCommunity.id}`,
+          displayText: `r/${currentCommunity.id}`,
+          link: `r/${currentCommunity.id}`,
           icon: FaReddit,
           iconColor: "blue.500",
-          imageURL: existingCommunity.imageURL,
+          imageURL: currentCommunity.imageURL,
         },
       }));
-      return;
-    }
-    setDirectoryState((prev) => ({
+    } else { setDirectoryState((prev) => ({
       ...prev,
       selectedMenuItem: defaultMenuItem,
-    }));
-  }, [router.query, communityStateValue.currentCommunity, setDirectoryState]);
-  //                              ^ used to be communityStateValue.vistedCommunities
+    }));}
+   
+  }, [communityStateValue.currentCommunity]);
 
-  return { directoryState, onSelectMenuItem, toggleMenuOpen };
+  return { directoryState, onSelectMenuItem, toggleMenuOpen, menuState };
 };
 
 export default useDirectory;
