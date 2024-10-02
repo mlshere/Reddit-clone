@@ -62,6 +62,7 @@ const useCommunityData = () => {
       setCommunityStateValue((prev) => ({
         ...prev,
         mySnippets: snippets as CommunitySnippet[],
+        snippetsFetched: true,
       }));
     } catch (error: any) {
       console.error("getMySnippets error: ", error.message);
@@ -80,7 +81,7 @@ const useCommunityData = () => {
 
       const newSnippet: CommunitySnippet = {
         communityId: communityData.id,
-        imageUrl: communityData.imageURL || "",// add imageUrl fixed the error
+        imageURL: communityData.imageURL || "",// add imageURL fixed the error
         isModerator: user?.uid === communityData.creatorId,
       };
       batch.set(
@@ -89,7 +90,7 @@ const useCommunityData = () => {
           `users/${user?.uid}/communitySnippets`,
           communityData.id
         ),
-        newSnippet
+        newSnippet 
       );
 
       // add user to community members, update community members count (+1)
@@ -169,6 +170,7 @@ const useCommunityData = () => {
       setCommunityStateValue((prev) => ({
         ...prev,
         mySnippets: [],
+        snippetsFetched: false,
       }));
       return;
     }
