@@ -31,7 +31,8 @@ const CreatePostLink = () => {
         router.push(`/r/${communityId}/submit`);
         return;
       } 
-    
+      
+      //open directory menu
       toggleMenuOpen();
     };
     return (
