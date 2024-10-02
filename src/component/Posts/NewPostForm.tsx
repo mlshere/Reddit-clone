@@ -22,8 +22,7 @@ import useSelectFile from "../../hooks/useSelectFile";
 
 type NewPostFormProps = {
   user: User;
-  // communityId: string;
-  // communityImageURL: string;
+  communityImageURL?: string;
 };
 
 const formTabs: TabItem[] = [
@@ -56,8 +55,7 @@ export type TabItem = {
 
 const NewPostForm: React.FC<NewPostFormProps> = ({
   user,
-  // communityId,
-  // communityImageURL,
+  communityImageURL,
 }) => {
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState(formTabs[0].title);
@@ -92,9 +90,12 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       console.log("Community ID is undefined");
       return;
     }
+
+    // create new Post Object
     const newPost: Post = {
       id: "",
       communityId: communityId as string,
+      communityImageURL: communityImageURL || "",
       creatorId: user.uid,
       creatorDisplayName: user.email!.split("@")[0],
       title: textInputs.title,
