@@ -1,5 +1,5 @@
 import { Flex, Image } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import SearchInput from "./SearchInput";
 import RightContent from "./RightContent/RightContent";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -10,7 +10,12 @@ import { defaultMenuItem } from "@/app/atoms/directoryMenuAtom";
 
 const Navbar: React.FC = () => {
   const [user, loading, error] = useAuthState(auth);
-  const { onSelectMenuItem } = useDirectory();
+  const { menuState, onSelectMenuItem } = useDirectory();
+
+  useEffect(() => {
+    // Force re-render when menuState changes
+  }, [menuState]);
+  
   return (
     <>
       <Flex 
