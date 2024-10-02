@@ -1,6 +1,9 @@
 import { communityState } from "@/app/atoms/communitiesAtom";
 import { Post, PostVote } from "@/app/atoms/postAtom";
 import CreatePostLink from "@/component/Community/CreatePostLink";
+import PersonalHome from "@/component/Community/PersonalHome";
+import Premium from "@/component/Community/Premium";
+import Recommendations from "@/component/Community/Recommendations";
 import PageContent from "@/component/Layout/PageContent";
 import PostItem from "@/component/Posts/PostItem";
 import PostLoader from "@/component/Posts/PostLoader";
@@ -126,7 +129,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (user && postStateValue.posts.length) getUserPostVotes();
     return () => {
-      setPostStateValue(prev => ({
+      setPostStateValue((prev) => ({
         ...prev,
         postVotes: [],
       }));
@@ -160,7 +163,13 @@ const Home: NextPage = () => {
           </Stack>
         )}
       </>
-      <>{/* Recommendations */}</>
+      <>
+        <Stack spacing={5}>
+          <Recommendations />
+          <Premium />
+          <PersonalHome />
+        </Stack>
+      </>
     </PageContent>
   );
 };
