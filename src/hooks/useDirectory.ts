@@ -49,7 +49,8 @@ const useDirectory = () => {
           imageURL: currentCommunity.imageURL,
         },
       }));
-    } else { setDirectoryState((prev) => ({
+    } else { 
+      setDirectoryState((prev) => ({
       ...prev,
       selectedMenuItem: defaultMenuItem,
     }));}
