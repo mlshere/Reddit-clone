@@ -15,7 +15,7 @@ export interface Community {
 export interface CommunitySnippet {
   communityId: string;
   isModerator?: boolean;
-  imageUrl?: string;
+  imageURL?: string;
 }
 
 interface CommunityState {
@@ -31,6 +31,7 @@ interface CommunityState {
     [key: string]: Community;
   };
   currentCommunity: Community;
+  snippetsFetched: boolean;
 }
 export const defaultCommunity: Community = {
   id: "",
@@ -44,6 +45,7 @@ const defaultCommunityState: CommunityState = {
   initSnippetsFetched: false,
   visitedCommunities: {},
   currentCommunity: defaultCommunity,
+  snippetsFetched: false,
 };
 
 export const communityState = atom<CommunityState>({
