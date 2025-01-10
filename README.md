@@ -83,7 +83,7 @@ Choices for a Reddit-style clone include:
 
 2. **Backend**  
    - **Node.js + Express** for RESTful APIs.  
-   - **PostgreSQL** for data storage.  
+   - **Firestore Database** for data storage.  
   
 3. **Authentication**  
    - **Firebase** strategies for sessions.
