@@ -1,4 +1,4 @@
-# Reddit Clone by [mlshere](https://github.com/mlshere/Reddit-clone)
+# Reddit Clone 
 
 A high-level overview of the **Reddit-clone** repository. This summary covers the project’s purpose, structure, core features, and potential technology stack, based on typical patterns for a Reddit-like application.
 
@@ -177,20 +177,20 @@ Access the application at [http://localhost:3000](http://localhost:3000) (or whi
    Personalize user pages with bios, karma points, or saved posts.
 
 5. **Realtime Updates**  
-   Use WebSockets or libraries like **Socket.IO** for dynamic commenting, voting, or post updates.
+   Use libraries like **Socket.IO** for dynamic commenting, voting, or post updates.
 
 ---
 
 ## 8. Conclusion
 
-The **Reddit-clone** repository by [mlshere](https://github.com/mlshere/Reddit-clone) demonstrates a full-stack application that mirrors Reddit’s essential features. It provides a solid foundation for learning about:
+The **Reddit-clone** tries to demonstrate a full-stack application that mirrors Reddit’s essential features. Through this project I gain a solid foundation for learning about:
 
 - **Database integration** (e.g., MongoDB/PostgreSQL + ORM)  
 - **RESTful API development** with Node.js/Express  
 - **User authentication and authorization** (JWT or similar)  
 - **Front-end frameworks** like React, including state management and routing  
 
-By exploring and extending this project, developers can deepen their understanding of how to build and maintain social-media-style platforms from end to end.
+
 
 
 
