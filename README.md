@@ -1,6 +1,6 @@
 # Reddit Clone 
 
-A high-level overview of the **Reddit-clone** repository. This summary covers the project’s purpose, structure, core features, and potential technology stack, based on typical patterns for a Reddit-like application.
+A reddit clone.
 
 ---
 
